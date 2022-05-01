@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorApp1", "BlazorApp1\Bl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorServerApp", "BlazorServerApp\BlazorServerApp.csproj", "{BAC65D67-2F71-4445-B803-8AB2FAF5F3DC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorSample", "C:\Users\pys42\Downloads\AspNetCore.Docs-main\AspNetCore.Docs-main\aspnetcore\blazor\samples\6.0\BlazorSample_Server\BlazorSample.csproj", "{3DD7DC94-0957-46F6-A914-B0312099F090}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,10 +21,6 @@ Global
 		{BAC65D67-2F71-4445-B803-8AB2FAF5F3DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BAC65D67-2F71-4445-B803-8AB2FAF5F3DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BAC65D67-2F71-4445-B803-8AB2FAF5F3DC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3DD7DC94-0957-46F6-A914-B0312099F090}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3DD7DC94-0957-46F6-A914-B0312099F090}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3DD7DC94-0957-46F6-A914-B0312099F090}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3DD7DC94-0957-46F6-A914-B0312099F090}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
