@@ -1,0 +1,116 @@
+﻿@page "/"
+
+@using System.Text.RegularExpressions
+@using Microsoft.AspNetCore.Hosting
+@inject IJSRuntime JSRuntime
+@inject IWebHostEnvironment Environment
+<div>
+    <div style="margin:10px 0;">
+        Theme:
+        <select @onchange="ChangeTheme">
+            <option value="vs">Visual Studio</option>
+            <option value="vs-dark">Visual Studio Dark</option>
+            <option value="hc-black">High Contrast Black</option>
+        </select>
+    </div>
+    <div style="margin:10px 0;">
+        <InputFile OnChange="@LoadFile" class="btn btn-primary"/>
+        
+        <button @onclick="DownloadFile">Download File</button>
+
+        <button @onclick="SaveFile">Save File</button>
+         
+    </div>
+</div>
+
+<MonacoEditor @ref="_editor" Id="sample-code-editor-123" ConstructionOptions="EditorConstructionOptions" OnDidInit="EditorOnDidInit" />
+<div>
+       <input type="text" @bind="TextTest" height=200px width=100% />
+</div>
+
+@code {
+    private MonacoEditor _editor { get; set; }
+    private string[] decorationIds;
+    private string fileName = "recipe.py";
+    private string TextTest = "adsfasdfasdfasdfasd \n adsfasdfas df\nadsfasdfasdf\nasdfasdfasdf\n";
+
+    private StandaloneEditorConstructionOptions EditorConstructionOptions(MonacoEditor editor)
+    {
+        return new StandaloneEditorConstructionOptions
+        {
+            Language = "javascript",
+            GlyphMargin = true,
+            Value = "\"import predit\"\n" +
+                    "function Predic(TEST) : \n" +
+                    "	if (age) : \n" +
+                    "		this.age = age\n" +
+                    "	"
+        };
+    }
+
+    private async Task EditorOnDidInit(MonacoEditorBase editor)
+    {
+        await _editor.AddCommand((int)KeyMode.CtrlCmd | (int)KeyCode.KEY_H, (editor, keyCode) =>
+        {
+            Console.WriteLine("Ctrl+H : Initial editor command is triggered.");
+        });
+
+        var newDecorations = new ModelDeltaDecoration[]
+        {
+            new ModelDeltaDecoration
+            {
+                Range = new BlazorMonaco.Range(3,1,3,1),
+                Options = new ModelDecorationOptions
+                {
+                    IsWholeLine = true,
+                    ClassName = "decorationContentClass",
+                    GlyphMarginClassName = "decorationGlyphMarginClass"
+                }
+            }
+        };
+
+        decorationIds = await _editor.DeltaDecorations(null, newDecorations);
+    }
+    private async Task ChangeTheme(ChangeEventArgs e)
+    {
+        Console.WriteLine($"setting theme to: {e.Value.ToString()}");
+        await MonacoEditor.SetTheme(e.Value.ToString());
+    }
+    private async void DownloadFile()
+    {
+        var content = await _editor.GetValue();
+        await JSRuntime.InvokeAsync<object>("saveFile", fileName, content);
+    }
+
+    private async Task LoadFile(InputFileChangeEventArgs e)
+    {
+        var singleFile = e.File;  
+
+        Regex regex = new Regex(".+\\.py", RegexOptions.Compiled);  
+        if (!regex.IsMatch(singleFile.Name))  
+        {  
+            //show error invalidad format file  
+        }  
+        else  
+        {  
+            var stream = singleFile.OpenReadStream();  
+            var csv = new List<string[]>();  
+            MemoryStream ms = new MemoryStream();  
+            await stream.CopyToAsync(ms);  
+            stream.Close();  
+            var outputFileString = System.Text.Encoding.UTF8.GetString(ms.ToArray());
+            await _editor.SetValue(outputFileString);
+        }  
+    }
+
+    private async Task SaveFile()
+    {
+        var path = Path.Combine(Environment.ContentRootPath,
+                        "recipe.py");
+        var content = await _editor.GetValue();
+        await using FileStream fs = new(path, FileMode.Create);
+        await using StreamWriter sw = new(fs);
+        await sw.WriteAsync(content);
+        sw.Close();
+    }
+}
